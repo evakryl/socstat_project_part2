@@ -7,7 +7,8 @@
 source(here::here("R", "00_config.R"))
 
 read_raw <- function(name) {
-  read_csv(raw_path(name), show_col_types = FALSE, guess_max = 100000) |>
+  #all columns are read as text except values: otherwise readr can read the sex code "T" as TRUE.
+  read_csv(raw_path(name), col_types = cols(values = col_double(), .default = col_character())) |>
     mutate(time = as.Date(time))
 }
 
