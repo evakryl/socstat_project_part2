@@ -24,6 +24,8 @@ download_dataset <- function(id, ukraine_only) {
   ) |>
     standardise_eurostat()
   if (ukraine_only) df <- filter(df, citizen == "UA")
+  #population: only the total (both sexes, all ages) is used later, so we keep only that and the file stays small.
+  if (id == "demo_pjan") df <- filter(df, sex == "T", age == "TOTAL")
   check_not_empty(df, id)
 }
 
