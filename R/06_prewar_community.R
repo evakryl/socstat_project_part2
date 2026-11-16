@@ -161,7 +161,7 @@ fig_correlations <- correlations_prewar |>
   theme_minimal() +
   theme(legend.position = "bottom")
 ggsave(figure_path("fig_correlations_by_date.png"), fig_correlations,
-       width = 9, height = 5, dpi = 150)
+       width = 9, height = 5, dpi = 150, bg = "white")
 
 # Plain scatter: the simple baseline against which the checks are read.
 fig_scatter <- prewar_measures |>
@@ -172,12 +172,17 @@ fig_scatter <- prewar_measures |>
   drop_na(permits_per_1000, outcome_per_1000) |>
   mutate(year = format(time, "%Y")) |>
   ggplot(aes(permits_per_1000, outcome_per_1000, label = geo)) +
-  geom_text(size = 3, check_overlap = TRUE) +
+  geom_point(size = 1) +
+  # Every country is labelled (no check_overlap, which would hide some).
+  geom_text(size = 2.5, vjust = -0.6) +
+  # Log scale on x: most countries have fewer than 5 permits per 1,000,
+  # so on a plain scale they would sit on top of each other.
+  scale_x_log10() +
   facet_wrap(~year, scales = "free_y") +
   labs(
-    x = "Valid permits held by Ukrainians, end of 2021, per 1,000",
+    x = "Valid permits held by Ukrainians, end of 2021, per 1,000 (log scale)",
     y = "Beneficiaries per 1,000 in December",
     title = "A few countries sit far from the rest"
   ) +
   theme_minimal()
-ggsave(figure_path("fig_scatter_prewar.png"), fig_scatter, width = 9, height = 6, dpi = 150)
+ggsave(figure_path("fig_scatter_prewar.png"), fig_scatter, width = 9, height = 6, dpi = 150, bg = "white")
