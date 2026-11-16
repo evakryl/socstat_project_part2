@@ -1,0 +1,16 @@
+source(here::here("R", "00_config.R"))
+library(sf)
+library(rnaturalearth)
+panel_versions <- read_rds(processed_path("panel_versions.rds"))
+filled_by_threshold <- read_rds(processed_path("panel_filled_by_threshold.rds"))
+world <- ne_countries(scale = "medium", returnclass = "sf")
+stopifnot("iso_a2_eh" %in% names(world))
+world <- world |> transmute(iso = iso_a2_eh)
+eurostat_to_iso <- function(geo) if_else(geo == "EL", "GR", geo)
+panel_countries <- panel_versions |>
+  distinct(geo) |>
+  mutate(iso = eurostat_to_iso(geo))
+countries <- world |> filter(iso %in% panel_countries$iso)
+not_found <- setdiff(panel_countries$iso, countries$iso)
+if (length(not_found) > 0) {
+  stop("No polygon for: ", paste(not_found, collapse = ", "), call. = FALSE)
