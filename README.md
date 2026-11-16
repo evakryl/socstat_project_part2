@@ -1,34 +1,57 @@
-# socstat_project_part2
+# Ukrainians under temporary protection in Europe, 2022–2025
 
-**Ukrainians under temporary protection in Europe, 2022–2025**
+**Course:** Social Statistics and Data Science for Economists (KSE), final project, Part 2
+**Members:** Yeva Kryl (GitHub: evakryl), Olha Oleksandrenko (olya-oleksandrenko), Victoriya Hermanchuk (vhermanchuk)
+**GitHub repository:** `<repo-name>` (private; instructor `dariia-m` added as collaborator)
 
-**Course**: Social Statistics / Соціальна статистика, Final project, Part 2
-**Group**: OYV
-**Members**: Yeva Kryl (evakryl), Olha Oleksandrenko (olya-oleksandrenko), Victoriya Hermanchuk (vhermanchuk)
+**Question:** How did the geographic distribution of Ukrainians under temporary protection in Europe change from August 2022 to December 2025, and is it related to how large the Ukrainian community in each country was before the war?
 
-Question: **How did the geographic distribution of Ukrainians under temporary protection in Europe change from August 2022 to December 2025, and is it related to how large the Ukrainian community in each country was before the war?**
+## How to run
 
-**Data**
-All data come from [Eurostat](https://ec.europa.eu/eurostat/data/database), downloaded with the `eurostat` R package. the download date is in `data/raw/download_date.txt`.
+1. Unzip the folder and open `project_groupname.Rproj` in RStudio (R >= 4.1).
+2. Install the packages once (the code never installs anything): `here`, `tidyverse` (dplyr >= 1.1, purrr >= 1.0, ggplot2 >= 3.4), `eurostat`, `sf`, `rnaturalearth`, `rnaturalearthdata`, `zoo`, `mice`.
+3. In a fresh R session run: `source("run_all.R")`.
 
-**How to run**
-1. unzip the folder and open project_OYV.Rproj in RStudio
-2. install the packages once (the code never installs anything): here, tidyverse, eurostat, sf, rnaturalearth, rnaturalearthdata, zoo, mice.
-3. in a fresh R session in the console run: source("run_all.R")
-4. WORTH TO MENTION: the raw data are already in data/raw/, so no internet is needed. but in order to download the data again, set _rerun_download <- TRUE_ at the top of _run_all.R_ (needs internet). the default is FALSE. session information is saved to output/session_info.txt.
+Runtime: about 5–10 minutes (most of it the imputation and the resampling in scripts 06–07; the numbers are to be updated after the first full run). Raw data are already in `data/raw/`, so no internet is needed.
+To download the data again, set `rerun_download <- TRUE` at the top of `run_all.R` (needs internet; no API key). Default is `FALSE`.
+All random steps use `set.seed(seed)` with `seed` defined in `R/00_config.R`. Session information is saved to `output/session_info.txt`.
 
-**Datasets and their usage**
+## Data
 
-1. `migr_asytpsm` | monthly beneficiaries of temporary protection, Ukrainian citizens | `migr_asytpsm.csv` |
-2. `migr_pop1ctz` | Ukrainian citizens resident on 01.01.2022 (before full scale invasion) | `migr_pop1ctz.csv` |
-3. `migr_resvalid` | valid residence permits held by Ukrainians, 31.12.2021 (before full scale invasion) | `migr_resvalid.csv` |
-4. `demo_pjan` | total population on 1st of January `demo_pjan.csv` |
+All data come from [Eurostat](https://ec.europa.eu/eurostat/data/database), downloaded with the `eurostat` R package. Licence: Eurostat data may be reused with acknowledgement of the source (Commission Decision 2011/833/EU, CC BY 4.0). Raw files are in `data/raw/`, filtered to Ukrainian citizens; the download date is in `data/raw/download_date.txt`.
 
-**Scripts**
+| Dataset | Content | Raw file |
+|---|---|---|
+| `migr_asytpsm` | Monthly beneficiaries of temporary protection, Ukrainian citizens | `migr_asytpsm.csv` |
+| `migr_pop1ctz` | Ukrainian citizens resident on 1 Jan 2022 | `migr_pop1ctz.csv` |
+| `migr_resvalid` | Valid residence permits held by Ukrainians, 31 Dec 2021 | `migr_resvalid.csv` |
+| `demo_pjan` | Total population on 1 January | `demo_pjan.csv` |
 
-0. R/00_config.R | parameters (dates, thresholds, seed, repetitions) and helper functions, loaded by every script
-1. R/01_get_data.R	| eurostat (only if rerun_download)	| `data/raw/*.csv`, `download_date.txt`
-2. R/02_clean.R	| data/raw/*.csv | `panel_monthly.rds`, `prewar_country.rds`
-3. R/03_descriptives.R	| `panel_monthly.rds` | `reporting_overview.csv`; `fig_totals_over_time.png`, `fig_per_1000_december_2025.png`
-4. R/04_missing_data.R | `panel_monthly.rds`, `panel_versions.rds`, `panel_filled_by_threshold.rds`, `panel_filled_strict.rds` | `missing_data_counts.csv`, `fig_missingness_grid.png`
-5. 
+Country borders: Natural Earth (public domain), via `rnaturalearth`.
+
+## Scripts (run in this order by `run_all.R`)
+
+| Script | Reads | Writes |
+|---|---|---|
+| `R/00_config.R` | – | Parameters (dates, thresholds, seed, repetitions) and helper functions; loaded by every script |
+| `R/01_get_data.R` | Eurostat (only if `rerun_download`) | `data/raw/*.csv`, `download_date.txt` |
+| `R/02_clean.R` | `data/raw/*.csv` | `data/processed/panel_monthly.rds`, `prewar_country.rds` |
+| `R/03_descriptives.R` | `panel_monthly.rds` | `output/tables/reporting_overview.csv`, `output/figures/fig_totals_over_time.png`, `fig_per_1000_december_2025.png` |
+| `R/04_missing_data.R` | `panel_monthly.rds` | `panel_versions.rds`, `panel_filled_by_threshold.rds`, `panel_filled_strict.rds`, `output/tables/missing_data_counts.csv`, `output/figures/fig_missingness_grid.png` |
+| `R/05_spatial.R` | `panel_versions.rds`, `panel_filled_by_threshold.rds` | `country_distances.rds`, tables `distance_check.csv`, `centre_of_gravity.csv`, `share_change_dec_first_last.csv`; figures `fig_centre_of_gravity.png`, `fig_centre_sensitivity.png`, `fig_maps_per_1000.png` |
+| `R/06_prewar_community.R` | `panel_versions.rds`, `prewar_country.rds` | `prewar_measures.rds`, `outcome_december.rds`, tables `under_reported_countries.csv`, `correlations_prewar.csv`; figures `fig_correlations_by_date.png`, `fig_scatter_prewar.png` |
+| `R/07_resampling.R` | `prewar_measures.rds`, `outcome_december.rds` | tables `resampling_summary.csv`, `leave_one_out_full.csv`, `noise_simulation.csv`; figures `fig_resampling_checks.png`, `fig_noise_simulation.png` |
+
+## Outputs and presentation slides
+
+| Slide topic | Output |
+|---|---|
+| Data and coverage | `fig_totals_over_time.png`, `reporting_overview.csv` |
+| Missing data: what is usable | `fig_missingness_grid.png`, `missing_data_counts.csv` |
+| Where people are (maps) | `fig_maps_per_1000.png`, `fig_per_1000_december_2025.png` |
+| Centre of gravity moves | `fig_centre_of_gravity.png`, `share_change_dec_first_last.csv` |
+| Does it depend on our choices | `fig_centre_sensitivity.png`, `distance_check.csv` |
+| Pre-war community and today | `fig_scatter_prewar.png`, `fig_correlations_by_date.png`, `under_reported_countries.csv` |
+| How solid is the link | `fig_resampling_checks.png`, `fig_noise_simulation.png`, `resampling_summary.csv` |
+
+Results are descriptive associations, not causal effects.
