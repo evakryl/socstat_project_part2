@@ -40,7 +40,7 @@ fig_totals <- ggplot(totals, aes(time, total / 1e6)) +
     subtitle = "Published numbers, before any cleaning"
   ) +
   theme_minimal()
-ggsave(figure_path("fig_totals_over_time.png"), fig_totals, width = 8, height = 4.5, dpi = 150)
+ggsave(figure_path("fig_totals_over_time.png"), fig_totals, width = 8, height = 4.5, dpi = 150, bg = "white")
 
 #per 1000 inhabitants in the last December of the window.
 last_december <- max(december_dates)
@@ -57,4 +57,4 @@ fig_top <- ggplot(top_per_1000, aes(per_1000, reorder(geo, per_1000))) +
     subtitle = "Published numbers"
   ) +
   theme_minimal()
-ggsave(figure_path("fig_per_1000_december_2025.png"), fig_top, width = 6, height = 5, dpi = 150)
+ggsave(figure_path("fig_per_1000_december_2025.png"), fig_top, width = 6, height = 5, dpi = 150, bg = "white")
