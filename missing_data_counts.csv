@@ -1,0 +1,5 @@
+rule,threshold,cells,missing_in_published,flagged,big_falls,filled_by_interpolation,still_missing
+fall rule + flag d,0.1,1271,0,211,17,15,213
+fall rule only,0.05,1271,0,0,31,31,0
+fall rule only,0.1,1271,0,0,17,17,0
+fall rule only,0.2,1271,0,0,7,7,0
