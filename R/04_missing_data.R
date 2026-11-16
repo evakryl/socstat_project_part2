@@ -1,5 +1,5 @@
 # 04_missing_data.R
-# hat it does: sub-question 2. maps which country-months are missing or flagged, then builds three versions of the monthly series: "published" (as downloaded), "excluded" (flagged cells and
+# what it does: sub-question 2. maps which country-months are missing or flagged, then builds three versions of the monthly series: "published" (as downloaded), "excluded" (flagged cells and
 #large one-month falls set to missing) and "filled" (excluded, then gaps of up to max_gap_months interpolated) and then it repeats this for three thresholds as a sensitivity check.
 #what it reads: panel_monthly.rds
 #what it writes: panel_versions.rds, panel_filled_by_threshold.rds, panel_filled_strict.rds, missing_data_counts.csv, fig_missingness_grid.png
@@ -16,6 +16,7 @@ fill_short_gaps <- function(x, max_gap) {
 }
 
 #applies the missing-data rules to the panel with one drop threshold. here we compare each month with the previous published month: a fall of more than the threshold is more likely a register clean-up than people leaving.
+#note: in our data no such fall recovers in the next months. only the month of the fall is set to missing and then interpolated, so the rule spreads a clean-up over two months; the lower level after it stays in the data.
 apply_rules <- function(panel, threshold, flag_pattern = flag_exclude_main) {
   panel |>
     arrange(geo, time) |>
@@ -115,4 +116,4 @@ fig_grid <- grid |>
                       max_gap_months, " months interpolated")) +
   theme_minimal() +
   theme(legend.position = "bottom")
-ggsave(figure_path("fig_missingness_grid.png"), fig_grid, width = 9, height = 7, dpi = 150)
+ggsave(figure_path("fig_missingness_grid.png"), fig_grid, width = 9, height = 7, dpi = 150, bg = "white")
