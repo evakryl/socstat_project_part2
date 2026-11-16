@@ -2,7 +2,7 @@
 
 **Course:** Social Statistics and Data Science for Economists (KSE), final project, Part 2
 **Members:** Yeva Kryl (GitHub: evakryl), Olha Oleksandrenko (olya-oleksandrenko), Victoriya Hermanchuk (vhermanchuk)
-**GitHub repository:** `<repo-name>` (private; instructor `dariia-m` added as collaborator)
+**GitHub repository:** `<socstat_project_part2>` (private; instructor `dariia-m` added as collaborator)
 
 **Question:** How did the geographic distribution of Ukrainians under temporary protection in Europe change from August 2022 to December 2025, and is it related to how large the Ukrainian community in each country was before the war?
 
