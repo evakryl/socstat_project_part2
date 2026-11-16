@@ -25,10 +25,12 @@ outcome <- panel_versions |>
 write_rds(outcome, processed_path("outcome_december.rds"))
 
 # Under-reporting rule ------------------------------------------------------
-# Where many Ukrainians held short-term permits (Poland), the citizenship stock
-# is low compared with permits. The ratio citizens / permits below a share of
-# the median ratio marks such countries; their citizenship value is set to
-# missing and imputed from permits.
+# Where many Ukrainians held short-term permits, the citizenship stock can be
+# low compared with permits. The ratio citizens / permits below a share of
+# the median ratio marks such countries (Slovakia, Lithuania, Hungary); their
+# citizenship value is set to missing and imputed from permits. Eight
+# countries (including Poland) have no published citizenship value at all and
+# are imputed in the same step.
 prewar_flagged <- prewar |>
   mutate(ratio = if_else(permits > 0, citizens / permits, NA_real_))
 median_ratio <- median(prewar_flagged$ratio, na.rm = TRUE)
