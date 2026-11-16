@@ -26,7 +26,7 @@ prewar_permits_date <- as.Date("2021-01-01")
 flag_exclude_main <- NA_character_ # NA = no flag removes a cell
 flag_exclude_strict <- "d"
 max_gap_months <- 2 # gaps up to this length are filled by interpolation
-drop_threshold <- 0.10 # a one-month fall bigger than this is treated as a clean-up
+drop_threshold <- 0.10 # the month of a fall bigger than this is set to missing
 drop_thresholds_sensitivity <- c(0.05, 0.10, 0.20)
 
 #pre-war community rule and imputation for sub-question 3 
