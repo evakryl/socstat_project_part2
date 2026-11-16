@@ -7,8 +7,7 @@
 library(here)
 library(tidyverse)
 
-#switch: TRUE downloads the data from Eurostat again (needs internet).
-#default FALSE: the scripts read the files already saved in data/raw/.
+#switch: TRUE downloads the data from Eurostat again (needs internet). default FALSE: the scripts read the files already saved in data/raw/.
 if (!exists("rerun_download")) rerun_download <- FALSE
 seed <- 20261115
 
@@ -18,9 +17,9 @@ end_month <- as.Date("2025-12-01")
 december_dates <- as.Date(c("2022-12-01", "2023-12-01", "2024-12-01", "2025-12-01"))
 population_dates <- as.Date(paste0(2022:2025, "-01-01")) # population on 1 January
 
-# Pre-war community: Eurostat reference dates
-prewar_citizens_date <- as.Date("2022-01-01") # migr_pop1ctz, nearest to the invasion
-prewar_permits_date <- as.Date("2021-01-01") # migr_resvalid, 31 December 2021
+#here we are computing the pre-war community using eurostat reference dates
+prewar_citizens_date <- as.Date("2022-01-01") 
+prewar_permits_date <- as.Date("2021-01-01") 
 
 #missing-data rules (sub-question 2)
 #no Eurostat flag marks a value as missing in these data (flags seen: b, d, e, dp), and France, Spain, Greece and Cyprus carry "d" ("definition differs") in every month. dropping flagged cells would remove those countries completely, so the main versions use only the fall rule, flag "d" is a strict sensitivity.
@@ -30,11 +29,11 @@ max_gap_months <- 2 # gaps up to this length are filled by interpolation
 drop_threshold <- 0.10 # a one-month fall bigger than this is treated as a clean-up
 drop_thresholds_sensitivity <- c(0.05, 0.10, 0.20)
 
-# Pre-war community rule and imputation (sub-question 3) -------------------
-underreport_ratio <- 0.5 # citizens / permits below 0.5 x median = under-reported
+#pre-war community rule and imputation for sub-question 3 
+underreport_ratio <- 0.5 # citizens/permits below 0.5*median=under-reported
 n_imputations <- 20
 
-# Resampling (sub-question 3) ---------------------------------------------
+#resampling for sub-question 3
 n_permutations <- 10000
 n_bootstrap <- 2000
 n_noise_reps <- 500
