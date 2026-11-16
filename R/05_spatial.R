@@ -131,9 +131,18 @@ fig_centre <- ggplot(centre_versions, aes(time, centre_km, colour = version)) +
   ) +
   theme_minimal() +
   theme(legend.position = "bottom")
-ggsave(figure_path("fig_centre_of_gravity.png"), fig_centre, width = 8, height = 5, dpi = 150)
+ggsave(figure_path("fig_centre_of_gravity.png"), fig_centre, width = 8, height = 5, dpi = 150, bg = "white")
 
-# Sensitivity: other fall thresholds, and Lviv instead of Kyiv.
+# Sensitivity: other fall thresholds, Lviv instead of Kyiv, and flag "d" removed.
+# Removing flag "d" drops Germany until mid-2024, so the set of countries
+# changes and the line would jump when Germany comes back. We therefore keep
+# only the countries that have a value in every month of that version.
+strict_balanced <- read_rds(processed_path("panel_filled_strict.rds")) |>
+  rename(beneficiaries = filled) |>
+  group_by(geo) |>
+  filter(!any(is.na(beneficiaries))) |>
+  ungroup()
+
 centre_sensitivity <- bind_rows(
   filled_by_threshold |>
     rename(beneficiaries = filled) |>
@@ -143,10 +152,9 @@ centre_sensitivity <- bind_rows(
     filter(version == "filled") |>
     centre_of_gravity("dist_lviv_km") |>
     mutate(reference = "Lviv", series = "Lviv as reference point"),
-  read_rds(processed_path("panel_filled_strict.rds")) |>
-    rename(beneficiaries = filled) |>
+  strict_balanced |>
     centre_of_gravity() |>
-    mutate(reference = "Kyiv", series = "also excluding flag d")
+    mutate(reference = "Kyiv", series = "also excluding flag d (fixed set of countries)")
 )
 fig_sensitivity <- ggplot(centre_sensitivity, aes(time, centre_km, colour = series)) +
   geom_line(linewidth = 0.8) +
@@ -155,9 +163,11 @@ fig_sensitivity <- ggplot(centre_sensitivity, aes(time, centre_km, colour = seri
     title = "Does the pattern depend on our choices?",
     subtitle = "Filled version, other thresholds, and Lviv as reference"
   ) +
+  # The legend has five long labels: two rows, so none is cut off.
+  guides(colour = guide_legend(nrow = 2)) +
   theme_minimal() +
   theme(legend.position = "bottom")
-ggsave(figure_path("fig_centre_sensitivity.png"), fig_sensitivity, width = 8, height = 5, dpi = 150)
+ggsave(figure_path("fig_centre_sensitivity.png"), fig_sensitivity, width = 8, height = 5, dpi = 150, bg = "white")
 
 # Change in each country's share between the first and last December --------
 first_dec <- min(december_dates)
@@ -204,4 +214,4 @@ fig_maps <- ggplot() +
     subtitle = "Filled version; grey = no usable value; star = Kyiv"
   ) +
   theme_minimal()
-ggsave(figure_path("fig_maps_per_1000.png"), fig_maps, width = 10, height = 8, dpi = 150)
+ggsave(figure_path("fig_maps_per_1000.png"), fig_maps, width = 10, height = 8, dpi = 150, bg = "white")
