@@ -149,7 +149,7 @@ fig_checks <- resampling_summary |>
   ) +
   theme_minimal() +
   theme(legend.position = "bottom")
-ggsave(figure_path("fig_resampling_checks.png"), fig_checks, width = 9, height = 5, dpi = 150)
+ggsave(figure_path("fig_resampling_checks.png"), fig_checks, width = 9, height = 5, dpi = 150, bg = "white")
 
 fig_noise <- noise_results |>
   mutate(year = format(date, "%Y")) |>
@@ -162,4 +162,4 @@ fig_noise <- noise_results |>
     title = "Measurement error pulls the correlation towards zero"
   ) +
   theme_minimal()
-ggsave(figure_path("fig_noise_simulation.png"), fig_noise, width = 8, height = 4.5, dpi = 150)
+ggsave(figure_path("fig_noise_simulation.png"), fig_noise, width = 8, height = 4.5, dpi = 150, bg = "white")
